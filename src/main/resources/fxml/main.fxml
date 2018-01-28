@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox prefHeight="300.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.gdax.gui.MainController">
+    <children>
+        <HBox prefHeight="100.0" prefWidth="200.0">
+            <children>
+                <TabPane prefHeight="200.0" prefWidth="314.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab text="Transfers">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="72.0" prefWidth="314.0"/>
+                            </content>
+                        </Tab>
+                        <Tab text="Untitled Tab 2">
+                            <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+                <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                    <children>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Label  text="Sell price"/>
+                                <Label fx:id="sellPrice" text="unknown"/>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Label  text="price spread"/>
+                                <Label fx:id="spreadPrice" text="unknown"/>
+                            </children>
+                        </VBox>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                            <children>
+                                <Label  text="Buy price"/>
+                                <Label fx:id="buyPrice" text="unknown"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0">
+            <children>
+                <Label text="wenn sell prise großer als "/>
+                <TextField fx:id="sellPriceField"/>
+            </children>
+        </HBox>
+        <HBox prefHeight="100.0" prefWidth="200.0">
+            <children>
+                <Label text="wenn  buy prise kleiner als "/>
+                <TextField fx:id="buyPriceField"/>
+            </children>
+        </HBox>
+    </children>
+</VBox>
