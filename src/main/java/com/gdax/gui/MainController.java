@@ -26,123 +26,103 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class MainController
-{
-	public TextField sellPriceField;
+public class MainController {
+    public TextField sellPriceField;
 
-	public TextField buyPriceField;
+    public TextField buyPriceField;
 
-	@FXML
-	private Label sellPrice;
+    @FXML
+    private Label sellPrice;
 
-	@FXML
-	private Label spreadPrice;
+    @FXML
+    private Label spreadPrice;
 
-	@FXML
-	private Label buyPrice;
+    @FXML
+    private Label buyPrice;
 
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-	@Autowired
-	private ExchangeClient exchangeClient;
+    @Autowired
+    private ExchangeClient exchangeClient;
 
-	@PostConstruct
-	public void init() throws IOException
-	{
-		final UserTrades userTrades = exchangeClient.getUserTrades();
-		for(UserTrade userTrade : userTrades.getUserTrades()){
-			System.out.println(userTrade);
-		}
-		scheduler.scheduleAtFixedRate(() -> setPrices(), 0, 10, SECONDS);
-	}
+    @PostConstruct
+    public void init() throws IOException {
+        final UserTrades userTrades = exchangeClient.getUserTrades();
+        for (UserTrade userTrade : userTrades.getUserTrades()) {
+            System.out.println(userTrade);
+        }
+        scheduler.scheduleAtFixedRate(() -> setPrices(), 0, 10, SECONDS);
+    }
 
-	private void setPrices()
-	{
-		final Ticker ticker;
-		try
-		{
-			ticker = exchangeClient.getTicker(CurrencyPair.ETH_EUR);
-			setPrices(ticker);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+    private void setPrices() {
+        final Ticker ticker;
+        try {
+            ticker = exchangeClient.getTicker(CurrencyPair.ETH_EUR);
+            setPrices(ticker);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	private void setPrices(Ticker ticker)
-	{
-		Platform.runLater(() -> {
-			String unknownPrice = "unknown";
-			String newBuyPrice;
-			String newSellPrice;
-			if(ticker == null)
-			{
-				newBuyPrice = unknownPrice;
-				newSellPrice = unknownPrice;
-			}
-			else
-			{
-				newBuyPrice = String.valueOf(ticker.getAsk().doubleValue());
-				newSellPrice = String.valueOf(ticker.getBid().doubleValue());
-			}
-			buyPrice.setText(newBuyPrice);
-			onBuyPriceChanged(newBuyPrice);
+    private void setPrices(Ticker ticker) {
+        Platform.runLater(() -> {
+            String unknownPrice = "unknown";
+            String newBuyPrice;
+            String newSellPrice;
+            if (ticker == null) {
+                newBuyPrice = unknownPrice;
+                newSellPrice = unknownPrice;
+            } else {
+                newBuyPrice = String.valueOf(ticker.getAsk().doubleValue());
+                newSellPrice = String.valueOf(ticker.getBid().doubleValue());
+            }
+            buyPrice.setText(newBuyPrice);
+            onBuyPriceChanged(newBuyPrice);
 
-			sellPrice.setText(newSellPrice);
-			onSellPriceChanged(newSellPrice);
+            sellPrice.setText(newSellPrice);
+            onSellPriceChanged(newSellPrice);
 
-			if(ticker == null)
-			{
-				spreadPrice.setText(unknownPrice);
-			}
-			else
-			{
-				DecimalFormat df = new DecimalFormat("#.##");
-				df.setRoundingMode(RoundingMode.CEILING);
-				spreadPrice.setText(df.format(ticker.getAsk().doubleValue() - ticker.getBid().doubleValue()));
-			}
-		});
-	}
+            if (ticker == null) {
+                spreadPrice.setText(unknownPrice);
+            } else {
+                DecimalFormat df = new DecimalFormat("#.##");
+                df.setRoundingMode(RoundingMode.CEILING);
+                spreadPrice.setText(df.format(ticker.getAsk().doubleValue() - ticker.getBid().doubleValue()));
+            }
+        });
+    }
 
-	private void onBuyPriceChanged(String newValue)
-	{
-		String greatPrice = sellPriceField.getText();
-		if(!greatPrice.trim().isEmpty() && newValue != null)
-		{
-			Double graitPriceDouble = Double.parseDouble(greatPrice);
-			if(Double.parseDouble(newValue) >= graitPriceDouble)
-			{
-				Platform.runLater(() -> {
-					Notifications.create()
-								 .title("Neuer großer Verkauf Prise!")
-								 .text(newValue)
-								 .showWarning();
-				});
-			}
-		}
-	}
+    private void onBuyPriceChanged(String newValue) {
+        String greatPrice = sellPriceField.getText();
+        if (!greatPrice.trim().isEmpty() && newValue != null) {
+            Double graitPriceDouble = Double.parseDouble(greatPrice);
+            if (Double.parseDouble(newValue) >= graitPriceDouble) {
+                Platform.runLater(() -> {
+                    Notifications.create()
+                            .title("Neuer großer Verkauf Prise!")
+                            .text(newValue)
+                            .showWarning();
+                });
+            }
+        }
+    }
 
-	private void onSellPriceChanged(String newValue)
-	{
-		String smallPrice = buyPriceField.getText();
-		if(!smallPrice.trim().isEmpty() && newValue != null)
-		{
-			Double smallPriceDouble = Double.parseDouble(smallPrice);
-			if(Double.parseDouble(newValue) <= smallPriceDouble)
-			{
-				Platform.runLater(() -> {
-					Notifications.create()
-								 .title("Neuer nidrieger Kauf Prise!")
-								 .text(newValue)
-								 .showWarning();
-				});
-			}
-		}
-	}
+    private void onSellPriceChanged(String newValue) {
+        String smallPrice = buyPriceField.getText();
+        if (!smallPrice.trim().isEmpty() && newValue != null) {
+            Double smallPriceDouble = Double.parseDouble(smallPrice);
+            if (Double.parseDouble(newValue) <= smallPriceDouble) {
+                Platform.runLater(() -> {
+                    Notifications.create()
+                            .title("Neuer nidrieger Kauf Prise!")
+                            .text(newValue)
+                            .showWarning();
+                });
+            }
+        }
+    }
 
-	public void stop()
-	{
-		scheduler.shutdown();
-	}
+    public void stop() {
+        scheduler.shutdown();
+    }
 }

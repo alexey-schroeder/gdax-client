@@ -21,38 +21,35 @@ import javax.annotation.PostConstruct;
 public class ExchangeClient
 
 {
-	@Value("${api.key}")
-	String apiKey;
+    @Value("${api.key}")
+    String apiKey;
 
-	@Value("${secret.key}")
-	String secretKey;
+    @Value("${secret.key}")
+    String secretKey;
 
-	@Value("${passphrase}")
-	String passphrase;
+    @Value("${passphrase}")
+    String passphrase;
 
-	Exchange exchange;
+    Exchange exchange;
 
-	MarketDataService marketDataService;
+    MarketDataService marketDataService;
 
-	@PostConstruct
-	private void init(){
-		final ExchangeSpecification defaultExchangeSpecification = new GDAXExchange().getDefaultExchangeSpecification();
-		defaultExchangeSpecification.setApiKey(apiKey);
-		defaultExchangeSpecification
-			.setSecretKey(secretKey);
-		defaultExchangeSpecification.setExchangeSpecificParametersItem("passphrase", passphrase);
-		exchange = ExchangeFactory.INSTANCE.createExchange(defaultExchangeSpecification);
-		marketDataService = exchange.getMarketDataService();
-	}
+    @PostConstruct
+    private void init() {
+        final ExchangeSpecification defaultExchangeSpecification = new GDAXExchange().getDefaultExchangeSpecification();
+        defaultExchangeSpecification.setApiKey(apiKey);
+        defaultExchangeSpecification.setSecretKey(secretKey);
+        defaultExchangeSpecification.setExchangeSpecificParametersItem("passphrase", passphrase);
 
-	public Ticker getTicker(CurrencyPair currencyPair) throws IOException
-	{
+        exchange = ExchangeFactory.INSTANCE.createExchange(defaultExchangeSpecification);
+        marketDataService = exchange.getMarketDataService();
+    }
 
-		return marketDataService.getTicker(currencyPair, 1);
-	}
+    public Ticker getTicker(CurrencyPair currencyPair) throws IOException {
+        return marketDataService.getTicker(currencyPair, 1);
+    }
 
-	public UserTrades getUserTrades() throws IOException
-	{
-		return exchange.getTradeService().getTradeHistory(new TradeHistoryParamsAll());
-	}
+    public UserTrades getUserTrades() throws IOException {
+        return exchange.getTradeService().getTradeHistory(new TradeHistoryParamsAll());
+    }
 }

@@ -31,19 +31,19 @@
                     <children>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                             <children>
-                                <Label  text="Sell price"/>
+                                <Label text="Sell price"/>
                                 <Label fx:id="sellPrice" text="unknown"/>
                             </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                             <children>
-                                <Label  text="price spread"/>
+                                <Label text="price spread"/>
                                 <Label fx:id="spreadPrice" text="unknown"/>
                             </children>
                         </VBox>
                         <VBox prefHeight="200.0" prefWidth="100.0">
                             <children>
-                                <Label  text="Buy price"/>
+                                <Label text="Buy price"/>
                                 <Label fx:id="buyPrice" text="unknown"/>
                             </children>
                         </VBox>
