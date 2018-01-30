@@ -2,13 +2,12 @@ package com.gdax.gui;
 
 import com.gdax.client.ExchangeClient;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
-import javafx.stage.WindowEvent;
+import javafx.scene.layout.VBox;
 import org.controlsfx.control.Notifications;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.dto.marketdata.Ticker;
@@ -20,16 +19,18 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class MainController {
-    public TextField sellPriceField;
+    public VBox tradesContentBox;
+    @FXML
+    private TextField sellPriceField;
 
-    public TextField buyPriceField;
+    @FXML
+    private TextField buyPriceField;
 
     @FXML
     private Label sellPrice;
@@ -40,6 +41,9 @@ public class MainController {
     @FXML
     private Label buyPrice;
 
+    @FXML
+    private Tab tradesTab;
+
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     @Autowired
@@ -47,11 +51,23 @@ public class MainController {
 
     @PostConstruct
     public void init() throws IOException {
+        initTrades();
+        scheduler.scheduleAtFixedRate(() -> setPrices(), 0, 10, SECONDS);
+    }
+
+    private void initTrades() throws IOException {
         final UserTrades userTrades = exchangeClient.getUserTrades();
         for (UserTrade userTrade : userTrades.getUserTrades()) {
-            System.out.println(userTrade);
+            initTrade(userTrade);
         }
-        scheduler.scheduleAtFixedRate(() -> setPrices(), 0, 10, SECONDS);
+    }
+
+    private void initTrade(UserTrade userTrade) throws IOException {
+        OrderController orderController = new OrderController(userTrade);
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/order.fxml"));
+        loader.setController(orderController);
+        tradesContentBox.getChildren().add(loader.load());
+        orderController.init();
     }
 
     private void setPrices() {

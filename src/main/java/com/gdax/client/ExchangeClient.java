@@ -1,9 +1,11 @@
 package com.gdax.client;
 
+import lombok.Getter;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeFactory;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.dto.account.Wallet;
 import org.knowm.xchange.dto.marketdata.Ticker;
 import org.knowm.xchange.dto.trade.UserTrades;
 import org.knowm.xchange.gdax.GDAXExchange;
@@ -11,6 +13,7 @@ import org.knowm.xchange.service.marketdata.MarketDataService;
 import org.knowm.xchange.service.trade.params.TradeHistoryParamsAll;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,9 +21,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 @Service
-public class ExchangeClient
+public class ExchangeClient {
 
-{
     @Value("${api.key}")
     String apiKey;
 
@@ -29,6 +31,10 @@ public class ExchangeClient
 
     @Value("${passphrase}")
     String passphrase;
+
+    @Value("${money.start}")
+    @Getter
+    double moneyOnStart;
 
     Exchange exchange;
 
@@ -50,6 +56,11 @@ public class ExchangeClient
     }
 
     public UserTrades getUserTrades() throws IOException {
+
         return exchange.getTradeService().getTradeHistory(new TradeHistoryParamsAll());
+    }
+
+    public Map<String, Wallet> getWallets() throws IOException {
+        return exchange.getAccountService().getAccountInfo().getWallets();
     }
 }

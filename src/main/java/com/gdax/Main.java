@@ -15,7 +15,7 @@ public class Main extends AbstractJavaFxApplicationSupport {
     private ControllersConfiguration.ViewHolder view;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.setScene(new Scene(view.getView()));
         stage.setResizable(true);
         stage.centerOnScreen();
